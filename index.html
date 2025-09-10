@@ -1,18 +1,336 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Giới thiệu bản thân</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Xin chào! Tôi là Bảo 👋</h1>
-        <p>Tôi đang học Git và xây dựng website tĩnh đầu tiên!</p>
-        <button onclick="sayHello()">Nhấn vào tôi</button>
-        <p id="message"></p>
-    </div>
+<!doctype html>
+<html lang="vi">
 
-    <script src="script.js"></script>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tài liệu Git & GitHub — Website tĩnh</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-5 flex items-center justify-between">
+            <h1 class="text-2xl font-semibold">Git & GitHub — Tài liệu đầy đủ (Tiếng Việt)</h1>
+            <nav class="space-x-4 text-sm text-slate-600">
+                <a href="#intro" class="hover:underline">Mở đầu</a>
+                <a href="#basic" class="hover:underline">Các lệnh cơ bản</a>
+                <a href="#config" class="hover:underline">Cấu hình</a>
+                <a href="#github" class="hover:underline">GitHub</a>
+                <a href="#remotes" class="hover:underline">Remotes & SSH</a>
+                <a href="#branches" class="hover:underline">Branching & Merge</a>
+                <a href="#advanced" class="hover:underline">Nâng cao</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10 space-y-10">
+
+        <!-- Intro -->
+        <section id="intro" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Mở đầu</h2>
+            <p class="mb-3">Tài liệu này giải thích các khái niệm quan trọng về <strong>Version Control System
+                    (VCS)</strong>, cách dùng <strong>Git</strong> (hệ thống quản lý phiên bản phân tán — DVCS) và
+                <strong>GitHub</strong> (dịch vụ lưu trữ remote repository và nền tảng hợp tác).</p>
+
+            <h3 class="font-semibold mt-4">Hiểu ý nghĩa của Version Control System</h3>
+            <ul class="list-disc pl-6 mt-2 text-sm text-slate-700">
+                <li>Ghi lại lịch sử thay đổi mã nguồn theo commit.</li>
+                <li>Tương tác nhiều lập trình viên cùng lúc, cho phép so sánh, quay lại, gộp thay đổi.</li>
+                <li>Giúp theo dõi ai làm gì, khi nào, và tại sao (khi viết commit message tốt).</li>
+            </ul>
+
+            <h3 class="font-semibold mt-4">Khởi tạo repository rỗng</h3>
+            <p>Để tạo một repository Git mới trong thư mục hiện tại:</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git init</code></pre>
+            <p class="mt-2">Giải thích: lệnh <code>git init</code> tạo thư mục ẩn <code>.git</code> chứa metadata và
+                object database. Sau init, thư mục trở thành một Git repository (local).</p>
+
+            <h3 class="font-semibold mt-4">Xóa repository</h3>
+            <p>Nếu muốn xóa repository (local) — xóa thư mục <code>.git</code>. <strong>Cẩn thận:</strong> hành động này
+                sẽ mất lịch sử.</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># linux / mac
+rm -rf .git
+
+# windows (PowerShell)
+Remove-Item -Recurse -Force .git</code></pre>
+        </section>
+
+        <!-- Basic Git commands -->
+        <section id="basic" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Các lệnh Git cơ bản</h2>
+
+            <h3 class="font-semibold mt-3">git status</h3>
+            <p>Hiển thị trạng thái working directory và staging area.</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git status</code></pre>
+
+            <h3 class="font-semibold mt-3">git add</h3>
+            <p>Đưa thay đổi vào staging area (index) trước khi commit.</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># thêm 1 file
+git add file.txt
+# thêm tất cả thay đổi (files + modifications)
+git add -A
+# thêm chỉ modifications và new files (không xóa):
+git add .
+# interactive
+git add -p</code></pre>
+            <p class="text-sm text-slate-600">Một số flag hay dùng: <code>-p</code> (patch, chọn hunks),
+                <code>-A</code>, <code>--intent-to-add</code>.</p>
+
+            <h3 class="font-semibold mt-3">git commit</h3>
+            <p>Tạo một commit (bắt snapshot từ staging area).</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git commit -m "Tiêu đề ngắn"
+# nếu chưa add, commit tất cả thay đổi tracked files
+git commit -a -m "Sửa nào đó"
+# edit message interactively
+git commit</code></pre>
+            <p class="text-sm text-slate-600">Thường dùng: <code>-m</code>, <code>-a</code>, <code>--amend</code> (sửa
+                commit mới nhất - chỉ khi chưa push hoặc biết hệ quả).</p>
+
+            <h3 class="font-semibold mt-3">git log</h3>
+            <p>Xem lịch sử commit.</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git log
+# xem dạng 1 dòng
+git log --oneline
+# xem graph
+git log --oneline --graph --all --decorate</code></pre>
+
+            <h3 class="font-semibold mt-4">Hiểu stages khi add & commit</h3>
+            <p>Ba trạng thái chính:</p>
+            <ol class="list-decimal pl-6 mt-2 text-sm text-slate-700">
+                <li>Working directory — nơi bạn sửa file.</li>
+                <li>Staging area (index) — nơi bạn dùng <code>git add</code> để chuẩn bị commit.</li>
+                <li>Repository (HEAD) — nơi commit được lưu (history).</li>
+            </ol>
+        </section>
+
+        <!-- Config -->
+        <section id="config" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Cấu hình Git</h2>
+            <p>Git có các cấu hình cấp hệ thống, cấp user (global), và cấp repository (local).</p>
+
+            <h3 class="font-semibold mt-3">Thay đổi cấu hình global</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git config --global user.name "Tên Bạn"
+git config --global user.email "you@example.com"
+# hiển thị
+git config --global --list</code></pre>
+
+            <h3 class="font-semibold mt-3">Tạo alias</h3>
+            <p>Alias tạm thời (chỉ terminal session):</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># bash
+alias gst='git status'
+# powershell
+Set-Alias gst git status</code></pre>
+            <p>Alias cố định (git alias):</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git config --global alias.st status
+# dùng: git st
+# ví dụ khác
+git config --global alias.co checkout
+# dùng: git co</code></pre>
+        </section>
+
+        <!-- GitHub overview -->
+        <section id="github" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Tổng quan GitHub</h2>
+
+            <h3 class="font-semibold mt-2">GitHub là gì — so sánh với Git</h3>
+            <p>Git là một hệ thống VCS (công cụ). GitHub là một dịch vụ hosting remote repositories, cung cấp giao diện
+                web, issue tracker, actions, PR workflows và nhiều tính năng cộng tác.</p>
+
+            <h3 class="font-semibold mt-2">Tại sao dùng GitHub? So sánh với DVCS khác</h3>
+            <ul class="list-disc pl-6 mt-2 text-sm text-slate-700">
+                <li>Tích hợp mạng xã hội (PR, review, CI/CD).</li>
+                <li>Hỗ trợ public/private repo, pages, actions.</li>
+                <li>Alternatives: GitLab, Bitbucket — đều là nền tảng tương tự; lựa chọn phụ thuộc vào tính năng CI,
+                    hosting, policy doanh nghiệp.</li>
+            </ul>
+
+            <p class="mt-3">(Lưu ý: phần <em>khởi tạo repository rỗng</em> và <em>xóa</em> đã trình bày ở phần mở đầu -
+                vì cả Git local và repository remote có các bước tương ứng.)</p>
+        </section>
+
+        <!-- Remotes & SSH -->
+        <section id="remotes" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Làm việc với Remotes & SSH</h2>
+
+            <h3 class="font-semibold mt-2">Tạo remote repository trên GitHub</h3>
+            <p>Trên GitHub: nhấn <strong>New repository</strong>, đặt tên, chọn public/private, rồi tạo.</p>
+
+            <h3 class="font-semibold mt-2">Tạo remote repository bằng CLI</h3>
+            <p>Sử dụng GitHub CLI (<code>gh</code>) — ví dụ:</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># tạo remote repo (yêu cầu đã login gh auth login)
+gh repo create ten-repo --public --source=. --remote=origin --push</code></pre>
+
+            <h3 class="font-semibold mt-2">Push code từ local lên remote</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># thêm remote
+git remote add origin git@github.com:username/ten-repo.git
+# push nhánh chính lần đầu kèm tạo upstream
+git push -u origin main
+# push các lần sau
+git push</code></pre>
+
+            <h3 class="font-semibold mt-2">SSH keys — ý nghĩa và tạo</h3>
+            <p>SSH key dùng để xác thực an toàn đến remote (không cần nhập mật khẩu mỗi lần). Thường tạo 1 cặp: private
+                (cần giữ bí mật) và public (đưa lên GitHub).</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># tạo SSH key (rsa hoặc ed25519)
+ssh-keygen -t ed25519 -C "you@example.com"
+# hiển thị public key
+cat ~/.ssh/id_ed25519.pub
+# copy lên GitHub > Settings > SSH and GPG keys</code></pre>
+            <p class="text-sm text-slate-600">Sau khi add key, kiểm tra:</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>ssh -T git@github.com</code></pre>
+        </section>
+
+        <!-- Workflow -->
+        <section id="workflow" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">GitHub workflow cơ bản</h2>
+            <ol class="list-decimal pl-6 mt-2 text-sm text-slate-700">
+                <li>Tạo fork (nếu bạn không có quyền push trực tiếp): click <strong>Fork</strong> trên GitHub — tạo bản
+                    sao trong account của bạn.</li>
+                <li>Clone remote repository: <code>git clone git@github.com:username/ten-repo.git</code></li>
+                <li>Tạo branch riêng (feature branch): <code>git checkout -b feature/my-change</code></li>
+                <li>Commit và push branch: <code>git push -u origin feature/my-change</code></li>
+                <li>Trên GitHub: tạo Pull Request từ branch của bạn vào upstream repository.</li>
+            </ol>
+
+            <h3 class="font-semibold mt-3">Upstream — thiết lập</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># giả sử origin là fork của bạn
+git remote -v
+# add upstream (original repo)
+git remote add upstream git@github.com:org/original-repo.git
+# fetch và rebase/sync
+git fetch upstream
+git merge upstream/main
+# hoặc
+git rebase upstream/main</code></pre>
+        </section>
+
+        <!-- Checkout & Reset -->
+        <section id="checkout-reset" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Check out và Reset</h2>
+
+            <h3 class="font-semibold mt-2">git checkout, git clean, git rm --cached</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># chuyển branch hoặc checkout file
+git checkout main
+git checkout -- file.txt   # lấy lại file từ HEAD
+
+# xóa file không tracked/ignored (cẩn thận)
+git clean -f    # chỉ files
+git clean -fd   # files + directories
+
+# xóa khỏi staging area nhưng giữ file
+git rm --cached file.txt</code></pre>
+
+            <h3 class="font-semibold mt-2">Undo commit với git reset</h3>
+            <p>Reset thay đổi pointer của HEAD; có 3 chế độ:</p>
+            <ul class="list-disc pl-6 mt-2 text-sm text-slate-700">
+                <li><code>--soft</code>: chỉ di chuyển HEAD (staged giữ nguyên).</li>
+                <li><code>--mixed</code> (mặc định): di chuyển HEAD và reset index (staging area), giữ working
+                    directory.</li>
+                <li><code>--hard</code>: di chuyển HEAD, reset index và working directory — mọi thay đổi sẽ mất (không
+                    thể khôi phục dễ dàng).</li>
+            </ul>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># ví dụ
+git reset --soft HEAD~1
+git reset --mixed HEAD~1
+git reset --hard HEAD~1</code></pre>
+        </section>
+
+        <!-- Branching -->
+        <section id="branches" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Branching</h2>
+            <h3 class="font-semibold mt-2">Tạo, liệt kê, xóa branch</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># tạo và chuyển
+git checkout -b feature/x
+# liệt kê
+git branch
+# xóa local
+git branch -d feature/x
+# xóa remote
+git push origin --delete feature/x</code></pre>
+
+            <h3 class="font-semibold mt-2">Ý nghĩa branch & khi dùng</h3>
+            <p>Branch cho phép phát triển tính năng độc lập, thử nghiệm, sửa lỗi mà không ảnh hưởng code ổn định trên
+                <code>main</code> hoặc <code>release</code>.</p>
+
+            <h3 class="font-semibold mt-2">Merge branch</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># merge feature vào main
+git checkout main
+git merge feature/x
+# nếu muốn fast-forward
+git merge --ff-only feature/x
+# hoặc rebase trước khi merge để lịch sử sạch
+git checkout feature/x
+git rebase main
+git checkout main
+git merge feature/x</code></pre>
+        </section>
+
+        <!-- diff & tools -->
+        <section id="diff" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Xem sự khác nhau của commit</h2>
+            <p>Sử dụng <code>git diff</code> để xem thay đổi giữa working dir, staging, và commit:</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># thay đổi chưa staged so với HEAD
+git diff
+# thay đổi staged so với HEAD
+git diff --staged
+# xem diff giữa 2 commit
+git diff commit1..commit2
+# xem commit detail (patch)
+git show COMMIT_HASH</code></pre>
+            <p class="mt-3">Có nhiều tools GUI để visualize diff: GitKraken, SourceTree, GitHub Desktop, VSCode Git
+                extension (rất tiện).</p>
+        </section>
+
+        <!-- Merge Conflicts -->
+        <section id="conflicts" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Merge Conflicts</h2>
+            <p>Hai loại merge chính: <strong>fast-forward</strong> (di chuyển pointer) và <strong>recursive</strong>
+                (3-way merge, có thể tạo conflict).</p>
+            <p class="mt-2">Conflict xảy ra khi Git không thể tự động kết hợp thay đổi; cần can thiệp thủ công:</p>
+            <ol class="list-decimal pl-6 mt-2 text-sm text-slate-700">
+                <li>Mở file báo conflict — Git chèn các marker <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>...</li>
+                <li>Chỉnh sửa để chọn/ghép nội dung đúng.</li>
+                <li><code>git add file</code> và <code>git commit</code> để hoàn tất merge.</li>
+            </ol>
+        </section>
+
+        <!-- Advanced topics -->
+        <section id="advanced" class="bg-white rounded-2xl p-8 shadow">
+            <h2 class="text-xl font-bold mb-3">Kiến thức nâng cao</h2>
+
+            <h3 class="font-semibold mt-2">Stashing</h3>
+            <p>Sử dụng khi bạn cần tạm thời cất thay đổi chưa commit để chuyển branch:</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git stash          # stash changes
+git stash list
+git stash apply     # áp dụng stash nhưng vẫn giữ stash
+git stash pop       # áp dụng và xoá stash</code></pre>
+
+            <h3 class="font-semibold mt-2">Rebasing</h3>
+            <p>Rebase thay đổi lên một base mới, giúp lịch sử tuyến tính hơn.</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># rebase branch lên main
+git checkout feature/x
+git rebase main</code></pre>
+            <p class="text-sm text-slate-600">So sánh Rebase vs Merge: Rebase tạo lịch sử sạch (không có merge commits)
+                nhưng thay đổi commit ids (không an toàn với commit đã public). Merge giữ lịch sử đầy đủ và an toàn khi
+                nhiều người làm việc trên cùng branch.</p>
+
+            <h3 class="font-semibold mt-2">Interactive rebase</h3>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code>git rebase -i HEAD~5
+# trong interactive mode bạn có thể: pick, reword, edit, squash, fixup, drop
+# dùng để sửa message, gộp commit, sắp xếp lại commit
+</code></pre>
+
+            <h3 class="font-semibold mt-2">Reverting</h3>
+            <p><strong>git revert</strong> tạo một commit đảo ngược một commit trước đó (an toàn cho lịch sử public).
+                <strong>git reset</strong> di chuyển HEAD và có thể rewrite lịch sử (không an toàn nếu đã push).</p>
+            <pre class="rounded-md p-4 bg-slate-100 text-sm overflow-x-auto"><code># tạo commit đảo ngược
+git revert COMMIT_HASH
+# reset (ví dụ)
+git reset --hard COMMIT_HASH</code></pre>
+        </section>
+    </main>
 </body>
+
 </html>
